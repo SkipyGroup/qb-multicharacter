@@ -140,6 +140,7 @@ end)
 
 RegisterNetEvent('qb-multicharacter:server:deleteCharacter', function(citizenid)
     local src = source
+    if not Config.EnableDeleteButton then return end
     QBCore.Player.DeleteCharacter(src, citizenid)
     TriggerClientEvent('QBCore:Notify', src, Lang:t("notifications.char_deleted") , "success")
 end)
@@ -198,7 +199,7 @@ end)
 QBCore.Functions.CreateCallback("qb-multicharacter:server:getSkin", function(_, cb, cid)
     local result = MySQL.query.await('SELECT * FROM playerskins WHERE citizenid = ? AND active = ?', {cid, 1})
     if result[1] ~= nil then
-        cb(result[1].model, result[1].skin)
+        cb(json.decode(result[1].skin))
     else
         cb(nil)
     end
